@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+
+  --color-bg: #f2f8f7;
+  --color-surface: #ffffff;
+  --color-sidebar: #e6f0ee;
+  --color-border: #cde2df;
+
+  --color-ink: #002220;
+  --color-ink-secondary: #4f6663;
+  --color-ink-muted: #7e938f;
+
+  --color-accent: #00725e;
+  --color-accent-hover: #002220;
+  --color-accent-soft: #dceeea;
+
+  --color-highlight: #48aaa3;
+  --color-highlight-ink: #002220;
+
+  --color-good: #00725e;
+  --color-good-soft: #dff0ec;
+  --color-critical: #d14343;
+  --color-critical-soft: #fbe7e7;
+  --color-info: #48aaa3;
+  --color-info-soft: #e3f1ef;
+
+  --gradient-brand: linear-gradient(135deg, var(--color-accent) 0%, var(--color-highlight) 100%);
+  /* Used for solid button fills — same as --gradient-brand in light mode,
+     overridden darker in dark mode (see below) so white text stays legible. */
+  --gradient-btn: var(--gradient-brand);
+}
+
+/* True neutral dark — deliberately gray, never blue-tinted. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg: #121212;
+  --color-surface: #1c1c1c;
+  --color-sidebar: #0d0d0d;
+  --color-border: #2e2e2e;
+
+  --color-ink: #f2f2f0;
+  --color-ink-secondary: #a8a8a5;
+  --color-ink-muted: #77776f;
+
+  --color-accent: #29c9ae;
+  --color-accent-hover: #5fe0c9;
+  --color-accent-soft: #163430;
+
+  --color-highlight: #5fc2bb;
+  --color-highlight-ink: #f2f2f0;
+
+  --color-good: #34d399;
+  --color-good-soft: #14352a;
+  --color-critical: #f87171;
+  --color-critical-soft: #3a1c1c;
+  --color-info: #5eead4;
+  --color-info-soft: #163430;
+
+  /* Deliberately darker than --color-accent/--color-highlight (which stay
+     bright so .text-gradient still pops against a near-black page) — white
+     text sitting on top of a button needs more contrast than that. */
+  --gradient-btn: linear-gradient(135deg, #0d9488 0%, #115e59 100%);
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-sidebar: var(--color-sidebar);
+  --color-border: var(--color-border);
+  --color-ink: var(--color-ink);
+  --color-ink-secondary: var(--color-ink-secondary);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-highlight: var(--color-highlight);
+  --color-highlight-ink: var(--color-highlight-ink);
+  --color-good: var(--color-good);
+  --color-good-soft: var(--color-good-soft);
+  --color-critical: var(--color-critical);
+  --color-critical-soft: var(--color-critical-soft);
+  --color-info: var(--color-info);
+  --color-info-soft: var(--color-info-soft);
+  --font-sans: var(--font-plus-jakarta);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+input,
+select {
+  color-scheme: inherit;
+}
+
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+input[type="color"] {
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: inherit;
+}
+
+input[type="color"]::-moz-color-swatch {
+  border: none;
+  border-radius: inherit;
+}
+
+/* Brand gradient utilities — used for primary CTAs, active nav pills, wordmark. */
+.btn-brand {
+  background-image: var(--gradient-btn);
+  transition: filter 0.15s ease;
+}
+
+.btn-brand:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn-brand:active:not(:disabled) {
+  filter: brightness(0.94);
+}
+
+.text-gradient {
+  background-image: var(--gradient-brand);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}

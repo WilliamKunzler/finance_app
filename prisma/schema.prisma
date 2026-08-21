@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  INVESTMENT
+}
+
+enum CardType {
+  CREDIT
+  DEBIT
+}
+
+enum PaymentType {
+  CREDIT_CARD
+  DEBIT_CARD
+  PIX
+  CASH
+  OTHER
+  INVESTMENT_WITHDRAWAL
+}
+
+model Category {
+  id           String           @id @default(cuid())
+  name         String
+  type         TransactionType
+  color        String           @default("#00725E")
+  transactions Transaction[]
+  fixedBills   FixedBill[]
+
+  @@unique([name, type])
+}
+
+model Person {
+  id           String        @id @default(cuid())
+  name         String        @unique
+  color        String        @default("#00725E")
+  photo        String?
+  cards        Card[]
+  transactions Transaction[]
+  fixedBills   FixedBill[]
+  createdAt    DateTime      @default(now())
+}
+
+model Card {
+  id           String        @id @default(cuid())
+  name         String        @unique
+  type         CardType
+  closingDay   Int?
+  dueDay       Int?
+  person       Person?       @relation(fields: [personId], references: [id])
+  personId     String?
+  transactions Transaction[]
+  fixedBills   FixedBill[]
+}
+
+model FixedBill {
+  id          String           @id @default(cuid())
+  description String
+  dueDay      Int
+  type        TransactionType
+  active      Boolean          @default(true)
+  endYear     Int?
+  endMonth    Int?
+
+  category    Category         @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  paymentType PaymentType      @default(OTHER)
+  card        Card?            @relation(fields: [cardId], references: [id])
+  cardId      String?
+  person      Person?          @relation(fields: [personId], references: [id])
+  personId    String?
+
+  revisions    FixedBillRevision[]
+  transactions Transaction[]
+  createdAt    DateTime            @default(now())
+}
+
+model FixedBillRevision {
+  id             String    @id @default(cuid())
+  fixedBill      FixedBill @relation(fields: [fixedBillId], references: [id], onDelete: Cascade)
+  fixedBillId    String
+  amount         Float
+  effectiveYear  Int
+  effectiveMonth Int
+  createdAt      DateTime  @default(now())
+
+  @@index([fixedBillId])
+}
+
+model Transaction {
+  id          String           @id @default(cuid())
+  description String
+  amount      Float
+  date        DateTime
+  type        TransactionType
+  category    Category         @relation(fields: [categoryId], references: [id])
+  categoryId  String
+
+  paymentType PaymentType      @default(OTHER)
+  card        Card?            @relation(fields: [cardId], references: [id])
+  cardId      String?
+  person      Person?          @relation(fields: [personId], references: [id])
+  personId    String?
+
+  fixedBill   FixedBill?       @relation(fields: [fixedBillId], references: [id], onDelete: SetNull)
+  fixedBillId String?
+
+  // Installments: all installments of the same purchase share installmentGroupId
+  installmentGroupId String?
+  installmentNumber  Int?
+  installmentTotal   Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([date])
+  @@index([categoryId])
+  @@index([cardId])
+  @@index([personId])
+  @@index([installmentGroupId])
+  @@index([fixedBillId])
+}

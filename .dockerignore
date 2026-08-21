@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.env
+src/generated
+tsconfig.tsbuildinfo
+next-env.d.ts
+.claude
+.agents
+.windsurf
+desktop-shortcut
