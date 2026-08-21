@@ -1,5 +1,9 @@
 FROM node:22-bookworm-slim
 
+# App stores/reads dates assuming America/Sao_Paulo local time (see src/app/parcelamentos/page.tsx);
+# without this the container defaults to UTC and month-boundary transactions shift by a day.
+ENV TZ=America/Sao_Paulo
+
 WORKDIR /app
 
 RUN apt-get update \
